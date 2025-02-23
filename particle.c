@@ -73,6 +73,9 @@ void particle_update(particle *p, float dt, size_t size) {
             p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 60;
             p[i].vel[1] *= (rand() % 2) ? -1 : 1;
             p[i].vel[0] *= (rand() % 2) ? -1 : 1;   
+            p[i].vel[0] = ((float) rand() / (float) RAND_MAX) * 50 - 25;
+            p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 100 - 50;   
+
         }
     }
 }
