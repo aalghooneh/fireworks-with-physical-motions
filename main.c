@@ -33,7 +33,7 @@ void ncurses_init() {
 
 int main() {
     struct timespec interval = { .tv_sec = 0, .tv_nsec = 25000000 };
-    size_t size = 200;
+    size_t size = 300;
 
     ncurses_init();
     srand((unsigned) time(NULL));
@@ -67,7 +67,7 @@ int main() {
         }
 
         // erase screen
-        erase();
+        clear();
 
         // update all particles
         particle_update(p, 0.01, size);
@@ -85,7 +85,8 @@ int main() {
         refresh();
 
         // wait a bit
-        nanosleep(&interval, NULL);
+        struct timespec frame_interval = { 0, 16666667 }; // ~16ms per frame
+        nanosleep(&frame_interval, NULL);
     }
 
     free(p);

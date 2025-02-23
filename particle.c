@@ -17,10 +17,15 @@
  * initializes array of particles to same position, velocity,
  * color, and life, and random symbols
  */
+
+const float grvty = 9.83;
+const float lftme = 6.0;
+
 void particle_init(particle *p, size_t size) {
     float init_vel, col;
     size_t i;
     uint8_t init_color;
+     
 
     // pick random upward velocity
     init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1))) * 0.8;
@@ -37,8 +42,9 @@ void particle_init(particle *p, size_t size) {
         p[i].pos[1] = col;
         p[i].vel[0] = init_vel;
         p[i].vel[1] = 0.0;
-        p[i].life = 1.6;
+        p[i].life = lftme;
         p[i].color = init_color;
+        p[i].shape='.';
         p[i].exploded = FALSE;
     }
 }
@@ -53,16 +59,18 @@ void particle_update(particle *p, float dt, size_t size) {
         p[i].life -= dt;
         p[i].pos[0] += p[i].vel[0] * dt;
         p[i].pos[1] += p[i].vel[1] * dt;
+        p[i].vel[0] += grvty * dt;
 
         // check if time to explode
-        if (p[i].life < 0.76 && !p[i].exploded) {
+        if (p[i].life < 0.80 * lftme && !p[i].exploded) {
             p[i].exploded = TRUE;
+            p[i].shape    = (char) (32 + (rand() % 94));
 
             p[i].center[0] = p[i].pos[0];
             p[i].center[1] = p[i].pos[1];
 
             p[i].vel[0] = ((float) rand() / (float) RAND_MAX) * 50 - 25;
-            p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 100 - 50;
+            p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 100 - 50;   
         }
     }
 }
@@ -78,12 +86,12 @@ void particle_draw(particle *p, size_t size) {
 
     for (i = 0; i < size; ++i) {
         // display bright characters right after explosion
-        if (p[i].life > 0.55 && p[i].life < 0.76) {
+        if (p[i].life > 0.55 * lftme && p[i].life < 0.76*lftme) {
             attron(A_BOLD);
         }
 
         // display dim characters right before dying
-        if (p[i].life < 0.2) {
+        if (p[i].life < 0.40 * lftme) {
             attron(A_DIM);
         }
 
@@ -91,12 +99,12 @@ void particle_draw(particle *p, size_t size) {
             pow(p[i].pos[0] - p[i].center[0], 2) +       // line
             pow((p[i].pos[1] - p[i].center[1]) * 0.6, 2) // column, scaled down
         );
-        if (p[i].exploded && distance > 9.5) {
+        if (p[i].exploded && distance > 100.5) {
             continue;
         }
 
         // draw the character
-        mvaddch(p[i].pos[0], p[i].pos[1], 'o');
+        mvaddch(p[i].pos[0], p[i].pos[1], p[i].shape);
     }
 
     // turn off color scheme
