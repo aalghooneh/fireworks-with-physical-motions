@@ -15,6 +15,7 @@
 /**
  * initializes necessary ncurses attributes
  */
+extern float lftme;
 void ncurses_init() {
     WINDOW *window = initscr(); // initialize screen
     noecho();                   // don't display typed characters
@@ -52,16 +53,16 @@ int main() {
 
     // check for user input to quit program
     while (getch() != 'q') {
-        if (p[0].life < 1.21 && p[0].life > 1.19) {
+        if (p[0].life < 0.80*lftme && p[0].life > 0.70 * lftme) {
             // reinitialize second array at 3/4 life of first
             particle_init(q, size);
-        } else if (p[0].life < 0.81 && p[0].life > 0.79) {
+        } else if (p[0].life < 0.85 * lftme && p[0].life > 0.79 * lftme) {
             // reinitialize third array at 1/2 life of first
             particle_init(r, size);
-        } else if (p[0].life < 0.41 && p[0].life > 0.39) {
+        } else if (p[0].life < 0.41 * lftme && p[0].life > 0.39* lftme) {
             // reinitialize fourth array at 1/4 life of first
             particle_init(s, size);
-        } else if (p[0].life < 0.01) {
+        } else if (p[0].life < 0.20 * lftme) {
             // check for end of life and reinitialize array if dead
             particle_init(p, size);
         }
