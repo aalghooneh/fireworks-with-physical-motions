@@ -51,22 +51,6 @@ int main() {
     }
     // check for user input to quit program
     while (getch() != 'q') {
-<<<<<<< Updated upstream
-        if (p[0].life < 1.21 && p[0].life > 1.19) {
-            // reinitialize second array at 3/4 life of first
-            particle_init(q, size);
-        } else if (p[0].life < 0.81 && p[0].life > 0.79) {
-            // reinitialize third array at 1/2 life of first
-            particle_init(r, size);
-        } else if (p[0].life < 0.41 && p[0].life > 0.39) {
-            // reinitialize fourth array at 1/4 life of first
-            particle_init(s, size);
-        } else if (p[0].life < 0.01) {
-            // check for end of life and reinitialize array if dead
-            particle_init(p, size);
-        }
-=======
->>>>>>> Stashed changes
 
         // erase screen
         clear();
