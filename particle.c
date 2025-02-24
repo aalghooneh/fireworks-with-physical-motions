@@ -21,6 +21,14 @@
 const float grvty = 9.83;
 const float lftme = 6.0;
 
+
+float getNrmlDistVal(float mu, float sig) {
+    float u1 = ((float) rand() / (float) RAND_MAX);
+    float u2 = ((float) rand() / (float) RAND_MAX);
+    float z0 = sqrt(-2.0 * log(u1)) * cos(2 * M_PI * u2);
+    return mu + z0 * sig;
+}
+
 void particle_init(particle *p, size_t size) {
     float init_vel, col;
     size_t i;
@@ -28,7 +36,11 @@ void particle_init(particle *p, size_t size) {
      
 
     // pick random upward velocity
+<<<<<<< Updated upstream
     init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1))) * 0.8;
+=======
+    init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1)));
+>>>>>>> Stashed changes
 
     // pick random color
     init_color = (uint8_t) (rand() % 8);
@@ -60,17 +72,43 @@ void particle_update(particle *p, float dt, size_t size) {
         p[i].pos[0] += p[i].vel[0] * dt;
         p[i].pos[1] += p[i].vel[1] * dt;
         p[i].vel[0] += grvty * dt;
+        if (p[i].vel[0] < 0.0 && p[i].exploded){
+            p[i].vel[0] *= 0.95;
+        }else {
+            p[i].vel[0] *= 0.999;
+        }
+
+        p[i].vel[1] *= 0.990;
+
+        if (p[i].exploded){
+            p[i].shape    = (char) (32 + (rand() % 94));
+        }
+        
+        if (p[i].life < 0.30 * lftme){
+            p[i].shape = '.';
+        }
 
         // check if time to explode
-        if (p[i].life < 0.80 * lftme && !p[i].exploded) {
+        if ((p[i].pos[0] <= 0.1f * (float)LINES || p[i].life < 0.70 * lftme) && !p[i].exploded) {
             p[i].exploded = TRUE;
-            p[i].shape    = (char) (32 + (rand() % 94));
+            
 
             p[i].center[0] = p[i].pos[0];
             p[i].center[1] = p[i].pos[1];
 
+<<<<<<< Updated upstream
             p[i].vel[0] = ((float) rand() / (float) RAND_MAX) * 50 - 25;
             p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 100 - 50;   
+=======
+            static const float max_speed = 30;
+
+            float angle = ((float) rand() / RAND_MAX) * 2.0f * M_PI;
+            float speed = ((float) rand() / RAND_MAX) * max_speed;  // e.g. max_speed = 20
+            p[i].vel[0] = speed * cosf(angle);   // x-component
+            p[i].vel[1] = speed * sinf(angle)/0.6;   // y-component
+
+        
+>>>>>>> Stashed changes
         }
     }
 }
@@ -91,7 +129,7 @@ void particle_draw(particle *p, size_t size) {
         }
 
         // display dim characters right before dying
-        if (p[i].life < 0.40 * lftme) {
+        if (p[i].life < 0.10 * lftme) {
             attron(A_DIM);
         }
 

@@ -38,20 +38,20 @@ int main() {
     ncurses_init();
     srand((unsigned) time(NULL));
 
-    // reserve memory for particle array
-    particle *p = (particle *) calloc(sizeof(particle), size);
-    particle *q = (particle *) calloc(sizeof(particle), size);
-    particle *r = (particle *) calloc(sizeof(particle), size);
-    particle *s = (particle *) calloc(sizeof(particle), size);
+    const int series = 8;
+
+    particle** srs_prtcl = (particle **) calloc(sizeof(particle), series);
+    for (int i =0 ; i < series ; i++) {
+        srs_prtcl[i] = (particle *) calloc(sizeof(particle), size);
+    }
 
     // initialize particle array
-    particle_init(p, size);
-    particle_init(q, size);
-    particle_init(r, size);
-    particle_init(s, size);
-
+    for (int i = 0; i < series; i++) {
+        particle_init(srs_prtcl[i], size);
+    }
     // check for user input to quit program
     while (getch() != 'q') {
+<<<<<<< Updated upstream
         if (p[0].life < 1.21 && p[0].life > 1.19) {
             // reinitialize second array at 3/4 life of first
             particle_init(q, size);
@@ -65,38 +65,35 @@ int main() {
             // check for end of life and reinitialize array if dead
             particle_init(p, size);
         }
+=======
+>>>>>>> Stashed changes
 
         // erase screen
         clear();
 
         // update all particles
-        particle_update(p, 0.01, size);
-        particle_update(q, 0.01, size);
-        particle_update(r, 0.01, size);
-        particle_update(s, 0.01, size);
-
-        // draw all particles to screen
-        particle_draw(p, size);
-        particle_draw(q, size);
-        particle_draw(r, size);
-        particle_draw(s, size);
+        for (int i = 0; i < series; i++) {
+            if (srs_prtcl[i][0].life < ((float)rand() / RAND_MAX)*0.50* lftme) {
+                particle_init(srs_prtcl[i], size);
+            }   
+        }
+        for (int i = 0; i < series; i++) {
+            particle_update(srs_prtcl[i], 0.01, size);
+            particle_draw(srs_prtcl[i], size);
+        }
 
         // draw particles to screen
         refresh();
 
         // wait a bit
-        struct timespec frame_interval = { 0, 16666667 }; // ~16ms per frame
+        struct timespec frame_interval = { 0, 10666667 }; // ~16ms per frame
         nanosleep(&frame_interval, NULL);
+
     }
 
-    free(p);
-    p = NULL;
-    free(q);
-    q = NULL;
-    free(r);
-    r = NULL;
-    free(s);
-    s = NULL;
+    free(srs_prtcl);
+    srs_prtcl = NULL;
+
 
     endwin();
 

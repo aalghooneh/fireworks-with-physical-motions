@@ -32,5 +32,6 @@ void particle_update(particle *p, float dt, size_t size);
 
 void particle_draw(particle *p, size_t size);
 
+float getNrmlDistVal(float mu, float sig);
 
 #endif
