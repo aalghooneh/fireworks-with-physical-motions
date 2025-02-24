@@ -11,6 +11,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
+#include <pthread.h>
 
 /**
  * initializes necessary ncurses attributes
@@ -32,14 +33,19 @@ void ncurses_init() {
     init_pair(7, 1, 0);         // Red on black
 }
 
+void updtAndDrw(particle* p, int size){
+    particle_update(p, 0.01, size);
+    particle_draw(p, size);
+}
+
 int main() {
     struct timespec interval = { .tv_sec = 0, .tv_nsec = 25000000 };
-    size_t size = 300;
+    size_t size = 500;
 
     ncurses_init();
     srand((unsigned) time(NULL));
 
-    const int series = 8;
+    const int series = 5;
 
     particle** srs_prtcl = (particle **) calloc(sizeof(particle), series);
     for (int i =0 ; i < series ; i++) {
@@ -62,16 +68,16 @@ int main() {
                 particle_init(srs_prtcl[i], size);
             }   
         }
+
         for (int i = 0; i < series; i++) {
-            particle_update(srs_prtcl[i], 0.01, size);
-            particle_draw(srs_prtcl[i], size);
+            updtAndDrw(srs_prtcl[i], size);
         }
 
         // draw particles to screen
         refresh();
 
         // wait a bit
-        struct timespec frame_interval = { 0, 10666667 }; // ~16ms per frame
+        struct timespec frame_interval = { 0, 16666667 }; // ~16ms per frame
         nanosleep(&frame_interval, NULL);
 
     }

@@ -12,6 +12,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 /**
  * initializes array of particles to same position, velocity,
@@ -22,7 +23,7 @@ const float grvty = 9.83;
 const float lftme = 6.0;
 
 // "Big" shape set
-static const char bigShapes[] = { '@', '#', 'O', '%', '&' };
+static const char bigShapes[] = { '@', '#', 'O', '%', '&'};
 static const size_t bigCount = sizeof(bigShapes) / sizeof(bigShapes[0]);
 
 // "Small" shape set
@@ -78,20 +79,30 @@ void particle_update(particle *p, float dt, size_t size) {
         p[i].pos[0] += p[i].vel[0] * dt;
         p[i].pos[1] += p[i].vel[1] * dt;
         p[i].vel[0] += grvty * dt;
+        
+        
         if (p[i].vel[0] < 0.0 && p[i].exploded){
-            p[i].vel[0] *= 0.95;
+            p[i].vel[0] *= 0.90;
         }else {
             p[i].vel[0] *= 0.999;
         }
 
-        p[i].vel[1] *= 0.990;
+        p[i].vel[1] *= 0.999;
 
-
+        float distance = sqrt(
+            pow(p[i].pos[0] - p[i].center[0], 2) +       // line
+            pow((p[i].pos[1] - p[i].center[1]) * 0.6, 2) // column, scaled down
+        );
         // ...
         if (p[i].exploded) {
-            if (p[i].life > 0.80f * lftme) {
-                // pick a random big shape
-                p[i].shape = bigShapes[rand() % bigCount];
+            if (distance < 3.0) {
+                char candidate;
+                // Keep picking until we find one NOT in smallShapes
+                do {
+                    candidate = (char)(32 + (rand() % (126 - 32 + 1)));
+                } while (strchr(smallShapes, candidate) != NULL);
+
+                p[i].shape = candidate;
             } else {
                 // pick a random small shape
                 p[i].shape = smallShapes[rand() % smallCount];
@@ -107,7 +118,7 @@ void particle_update(particle *p, float dt, size_t size) {
         }
 
         // check if time to explode
-        if ((p[i].pos[0] <= 0.1f * (float)LINES || p[i].life < 0.70 * lftme) && !p[i].exploded) {
+        if ((p[i].pos[0] <= 0.1f * (float)LINES || p[i].life < 0.80 * lftme) && !p[i].exploded) {
             p[i].exploded = TRUE;
             
 
@@ -115,7 +126,7 @@ void particle_update(particle *p, float dt, size_t size) {
             p[i].center[1] = p[i].pos[1];
 
 
-            static const float max_speed = 30;
+            static const float max_speed = 50;
 
             float angle = ((float) rand() / RAND_MAX) * 2.0f * M_PI;
             float speed = ((float) rand() / RAND_MAX) * max_speed;  // e.g. max_speed = 20
@@ -151,7 +162,7 @@ void particle_draw(particle *p, size_t size) {
             pow(p[i].pos[0] - p[i].center[0], 2) +       // line
             pow((p[i].pos[1] - p[i].center[1]) * 0.6, 2) // column, scaled down
         );
-        if (p[i].exploded && distance > 100.5) {
+        if (p[i].exploded && distance > 20.5) {
             continue;
         }
 
