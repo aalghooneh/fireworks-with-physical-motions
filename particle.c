@@ -21,6 +21,15 @@
 const float grvty = 9.83;
 const float lftme = 6.0;
 
+// "Big" shape set
+static const char bigShapes[] = { '@', '#', 'O', '%', '&' };
+static const size_t bigCount = sizeof(bigShapes) / sizeof(bigShapes[0]);
+
+// "Small" shape set
+static const char smallShapes[] = { '.', ':', ';', '`', '\'' };
+static const size_t smallCount = sizeof(smallShapes) / sizeof(smallShapes[0]);
+
+
 
 float getNrmlDistVal(float mu, float sig) {
     float u1 = ((float) rand() / (float) RAND_MAX);
@@ -77,9 +86,21 @@ void particle_update(particle *p, float dt, size_t size) {
 
         p[i].vel[1] *= 0.990;
 
-        if (p[i].exploded){
-            p[i].shape    = (char) (32 + (rand() % 94));
+
+        // ...
+        if (p[i].exploded) {
+            if (p[i].life > 0.80f * lftme) {
+                // pick a random big shape
+                p[i].shape = bigShapes[rand() % bigCount];
+            } else {
+                // pick a random small shape
+                p[i].shape = smallShapes[rand() % smallCount];
+            }
         }
+
+        //if (p[i].exploded){
+        //    p[i].shape    = (char) (32 + (rand() % 94));
+        //}
         
         if (p[i].life < 0.30 * lftme){
             p[i].shape = '.';
