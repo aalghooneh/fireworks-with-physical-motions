@@ -36,11 +36,8 @@ void particle_init(particle *p, size_t size) {
      
 
     // pick random upward velocity
-<<<<<<< Updated upstream
-    init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1))) * 0.8;
-=======
     init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1)));
->>>>>>> Stashed changes
+
 
     // pick random color
     init_color = (uint8_t) (rand() % 8);
@@ -96,10 +93,6 @@ void particle_update(particle *p, float dt, size_t size) {
             p[i].center[0] = p[i].pos[0];
             p[i].center[1] = p[i].pos[1];
 
-<<<<<<< Updated upstream
-            p[i].vel[0] = ((float) rand() / (float) RAND_MAX) * 50 - 25;
-            p[i].vel[1] = ((float) rand() / (float) RAND_MAX) * 100 - 50;   
-=======
             static const float max_speed = 30;
 
             float angle = ((float) rand() / RAND_MAX) * 2.0f * M_PI;
@@ -108,7 +101,6 @@ void particle_update(particle *p, float dt, size_t size) {
             p[i].vel[1] = speed * sinf(angle)/0.6;   // y-component
 
         
->>>>>>> Stashed changes
         }
     }
 }
