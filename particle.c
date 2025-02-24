@@ -36,8 +36,8 @@ void particle_init(particle *p, size_t size) {
      
 
     // pick random upward velocity
-    init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1)));
 
+    init_vel = (((float) rand()) / ((float) RAND_MAX) * (-LINES) - (LINES / (rand() % 4 + 1)));
 
     // pick random color
     init_color = (uint8_t) (rand() % 8);
@@ -92,6 +92,7 @@ void particle_update(particle *p, float dt, size_t size) {
 
             p[i].center[0] = p[i].pos[0];
             p[i].center[1] = p[i].pos[1];
+
 
             static const float max_speed = 30;
 

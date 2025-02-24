@@ -15,6 +15,7 @@
 /**
  * initializes necessary ncurses attributes
  */
+extern const float lftme;
 void ncurses_init() {
     WINDOW *window = initscr(); // initialize screen
     noecho();                   // don't display typed characters
